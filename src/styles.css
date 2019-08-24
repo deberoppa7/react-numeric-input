@@ -1,8 +1,100 @@
-/* add css styles here (optional) */
-
-.test {
-  display: inline-block;
-  margin: 2em auto;
-  border: 2px solid #000;
-  font-size: 2em;
+.react-numeric-input {
+	position: relative;
+	display: inline-block;
+}
+.react-numeric-input .react-numeric-input-inner {
+	display: flex;
+	position: relative;
+}
+.react-numeric-input * {
+	box-sizing: border-box;
+}
+.react-numeric-input input {
+	height: 30px;
+	text-align: center;
+	font-size: 16px;
+	padding-right: 30px;
+}
+.react-numeric-input input:disabled {
+	cursor: not-allowed;
+	color: #ddd;
+}
+.react-numeric-input .btn {
+	font-style: normal;
+	font-size: 16px;
+	background: #ccc;
+	cursor: pointer;
+	outline: none;
+}
+.react-numeric-input .btn.disabled, .react-numeric-input .btn:disabled {
+	cursor: not-allowed;
+	opacity: 0.4;
+}
+.react-numeric-input .btn:hover {
+	background: #bbb;
+}
+.react-numeric-input .btn.increase-btn {
+	width: 24px;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	height: 12.5px;
+	border-radius: 3px;
+}
+.react-numeric-input .btn.increase-btn:before {
+	border-width: 0px 5px 5px;
+	border-color: transparent transparent rgba(0, 0, 0, 0.7);
+}
+.react-numeric-input .btn.decrease-btn {
+	width: 24px;
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	height: 12.5px;
+	border-radius: 3px;
+}
+.react-numeric-input .btn.decrease-btn:before {
+	border-width: 5px 5px 0;
+	border-color: rgba(0, 0, 0, 0.7) transparent transparent;
+}
+.react-numeric-input .btn:before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+	transform: translateX(-50%) translateY(-50%);
+}
+.react-numeric-input.mobile input {
+	padding-right: 0;
+}
+.react-numeric-input.mobile .btn {
+	height: 30px;
+	width: 30px;
+	border: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	border-radius: 0;
+}
+.react-numeric-input.mobile .btn.increase-btn:before {
+	content: '+';
+	border: none;
+	height: auto;
+	width: auto;
+	font-weight: bold;
+}
+.react-numeric-input.mobile .btn.decrease-btn:before {
+	content: '-';
+	border: none;
+	height: auto;
+	width: auto;
+	font-weight: bold;
 }
