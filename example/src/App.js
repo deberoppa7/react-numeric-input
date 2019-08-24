@@ -10,11 +10,18 @@ export default class App extends Component {
 				<h1>React Numeric Input - USAGE</h1>
 
 				<div>
-					<h2>Basic</h2>
+					<h2>Default</h2>
 <SyntaxHighlighter language='jsx'>
 {`<RNI />`}
 </SyntaxHighlighter>
 					<RNI />
+				</div>
+				<div>
+					<h2>Add ClassName</h2>
+<SyntaxHighlighter language='jsx'>
+{`<RNI className="my-custom-class1"/>`}
+</SyntaxHighlighter>
+				<RNI className="my-custom-class1"/>
 				</div>
 				
 				<div>
