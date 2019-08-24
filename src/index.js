@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import styles from  './styles.css';
 
-console.log(styles)
-
 /**
  * @ReactComponent RNI - react numeric input
  * @param {string} className - The component's className 
@@ -20,6 +18,7 @@ console.log(styles)
  * @param {number} precision - describes the number of digits that are used to express the output.
  * @param {boolean} readOnly - Make the input readonly.
  * @param {boolean} disabled - Disable the input
+ * @param {function} onChanged - Callback fired when the value updated
 */
 
 export default class RNI extends Component {
@@ -71,9 +70,7 @@ export default class RNI extends Component {
 		const { value } 	= this.state;
 		const v = ( (value - step) < min ) ? min  : (value - step);
 
-		if( !min )
-			this.setValue( v, this.checkToDisableButtons );
-		if( min && (value > min) ) 
+		if( !min || (min && (value > min)) )
 			this.setValue( v, this.checkToDisableButtons );
 	}
 
@@ -83,10 +80,7 @@ export default class RNI extends Component {
 
 		const v = ((value + step ) > max ) ? max : (value + step );
 
-		if( !max ) 
-			this.setValue( v, this.checkToDisableButtons );
-		
-		if( max && (value < max) ) 
+		if( !max || (max && (value < max)) ) 
 			this.setValue( v, this.checkToDisableButtons );
 	}
 	
@@ -115,12 +109,10 @@ export default class RNI extends Component {
 		const { min, max } = this.props;
 		const { value }    = this.state;
 
-		if(min && max)
-			this.setState({ disableIncreaseBtn : (min >= max) });
-		if(min)
-			this.setState({ disableDecreaseBtn : (value <= min) });
-		if(max) 
-			this.setState({ disableIncreaseBtn : (value >= max) });
+		this.setState({ 
+			disableDecreaseBtn : (value <= min),
+			disableIncreaseBtn : (value >= max)
+		});
 	}
 
 
@@ -140,9 +132,8 @@ export default class RNI extends Component {
 				<span className={styles['react-numeric-input-inner']}>
 					<i
 						data-test="decrease-btn" 
-						disabled={disabled || readOnly}
-						onClick={this.decreaseClickHandler.bind(this)}
-						className={`${styles['btn']} ${styles['decrease-btn']} ${this.state.disableDecreaseBtn ? styles['disabled'] : ""}`}
+						onClick={(!disabled && !readOnly) ? this.decreaseClickHandler.bind(this) : null}
+						className={`${styles['btn']} ${styles['decrease-btn']} ${this.state.disableDecreaseBtn || (disabled || readOnly ) ? styles['disabled'] : ""}`}
 					/>
 					<input
 						{...inputProps}
@@ -157,9 +148,8 @@ export default class RNI extends Component {
 					/>
 					<i
 						data-test="increase-btn"
-						disabled={this.props.disabled || this.props.readOnly}
-						onClick={this.increaseClickHandler.bind(this)}
-						className={`${styles['btn']} ${styles['increase-btn']} ${this.state.disableIncreaseBtn ? styles['disabled'] : ""}`} 
+						onClick={(!disabled && !readOnly) ? this.increaseClickHandler.bind(this) : null}
+						className={`${styles['btn']} ${styles['increase-btn']} ${this.state.disableIncreaseBtn || (disabled || readOnly ) ? styles['disabled'] : ""} `} 
 					/>
 				</span>
 			</span>
@@ -180,7 +170,8 @@ export default class RNI extends Component {
 		format 		: null,
 		mobile 		: false,
 		disabled 	: false,
-		readOnly 	: false
+		readOnly 	: false,
+		onChanged 	: null
 	};
 }
 
@@ -196,7 +187,8 @@ RNI.propTypes = {
 	prefix 		: PropTypes.string,
 	suffix 		: PropTypes.string,
 	format 		: PropTypes.func,
-	mobile 		: PropTypes.bool
+	mobile 		: PropTypes.bool,
+	onChanged 	: PropTypes.func
 };
 
 
