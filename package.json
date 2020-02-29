@@ -1,6 +1,6 @@
 {
   "name": "@deberoppa/react-numeric-input",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "author": "deberoppa7",
   "license": "MIT",
@@ -20,11 +20,6 @@
     "prepare": "npm run build",
     "predeploy": "cd example && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
-  },
-  "peerDependencies": {
-    "prop-types": "^15.5.4",
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
@@ -53,9 +48,14 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-postcss": "^1.6.2",
-    "rollup-plugin-url": "^1.4.0"
+    "rollup-plugin-url": "^1.4.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "prop-types": "^15.7.2"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+  }
 }

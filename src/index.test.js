@@ -1,37 +1,37 @@
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import {setup, findByTestAttr} from "./testUtils";
+import { setup, findByTestAttr, moutedWrapper } from "./test-utils";
 
-import RNI from '../src/RNI';
+import RNI from '../';
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() }); 
 
 describe('The component <RNI />', () => {
 
-	it('renders without crashing', () => {
+	it('Renders without crashing', () => {
 		const wrapper  = setup(RNI);
 		const component = findByTestAttr(wrapper, "react-numeric-input");
 		expect(component.length).toBe(1);
 	});
 	
-	it('renders decrease button', () => {
+	it('Renders decrease button', () => {
 		const wrapper  = setup(RNI);
 		const decreaseBtn = findByTestAttr(wrapper, "decrease-btn");
 		expect(decreaseBtn.length).toBe(1);
 	});
 	
-	it('renders increase button', () => {
+	it('Renders increase button', () => {
 		const wrapper  = setup(RNI);
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
 		expect(increaseBtn.length).toBe(1);
 	});
 	
-	it('value start at 0 if no min value was given',  () => {
+	it('Value start at 0 if no min value was given',  () => {
 		const wrapper  = setup(RNI);
 		expect(wrapper.state().value).toBe(0);
 	});
 
-	it('the value start at given min value',  () => {
+	it('The value start at given min value',  () => {
 		const wrapper = setup(RNI, {min : 4});
 		expect(wrapper.state().value).toBe(4);
 	});
@@ -39,8 +39,8 @@ describe('The component <RNI />', () => {
 	it('Entering a value on the input and the value must never excced the given max',  () => {
 		const wrapper = setup(RNI, {max : 5});
 		const input = findByTestAttr(wrapper, "input");
-		input.simulate('change', { target: { value: 8 } });
-		input.simulate('blur');
+		input.simulate('change', { target: { value: 8 }, persist: jest.fn() });
+		input.simulate('blur', { persist: jest.fn() }); 
 		expect(wrapper.state().value).toBe(5);
 	});
 
@@ -48,29 +48,31 @@ describe('The component <RNI />', () => {
 		const wrapper = setup(RNI, {min : 5});
 		const input = findByTestAttr(wrapper, "input");
 		input.prop('onChange', { target: { value: 2} });
-		input.simulate('blur');
+		input.simulate('blur', { persist: jest.fn() }); 
 		expect(wrapper.state().value).toBe(5);
 	}); 
 
-	it('the value never excced the given max',  () => {
+	it('The value never excced the given max',  () => {
 		const wrapper = setup(RNI, {max : 5, min: 2, value : 7});
 		expect(wrapper.state().value).toBe(5);
 	});
 
-	it('the value never be inferior than the given min',  () => {
+	it('The value never be inferior than the given min',  () => {
 		const wrapper = setup(RNI, {max : 5, min: 2, value : 1});
 		expect(wrapper.state().value).toBe(2);
 	});
 
-	it('clicking the increment button update the input value',  () => {
+	it('Clicking the increment button update the input value',  () => {
 		const wrapper = setup(RNI);
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
+		
 		expect(wrapper.state().value).toBe(0);
 		increaseBtn.simulate('click');
 		expect(wrapper.state().value).toBe(1);
+
 	});
 
-	it('clicking the decrement button update the input value',  () => {
+	it('Clicking the decrement button update the input value',  () => {
 		const wrapper = setup(RNI, {value : 2});
 		const decreaseBtn = findByTestAttr(wrapper, "decrease-btn");
 		expect(wrapper.state().value).toBe(2);
@@ -78,7 +80,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().value).toBe(1);
 	});
 
-	it("clicking the decrement button doesn't be inferior than the input min value",  () => {
+	it("Clicking the decrement button doesn't be inferior than the input min value",  () => {
 		const wrapper = setup(RNI, { min : 2});
 		const decreaseBtn = findByTestAttr(wrapper, "decrease-btn");
 		expect(wrapper.state().value).toBe(2);
@@ -87,7 +89,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().value).toBe(2);
 	});
 
-	it("clicking the increment button doesn't excced the max value",  () => {
+	it("Clicking the increment button doesn't excced the max value",  () => {
 		const wrapper = setup(RNI, {max : 2});
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
 		expect(wrapper.state().value).toBe(0);
@@ -101,14 +103,14 @@ describe('The component <RNI />', () => {
 	it("the input can accepte only numeric value",  () => {
 		const wrapper = setup(RNI);
 		const input = findByTestAttr(wrapper, "input");
-		input.simulate('change', { target: { value: 'aaa'} });
+		input.simulate('change', { target: { value: 'aaa'}, persist: jest.fn() });
 		expect(wrapper.state().value).toBe(0);
 	});
 	
 	
 	it("the component can pass the value through the onChange props",  () => {
-		let val = null;
-		const wrapper = setup(RNI, { onChange : (value) => val = value });
+		let val = 0;
+		const wrapper = moutedWrapper(RNI, { onChange : (value) => val = value});
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
 		increaseBtn.simulate('click');
 		increaseBtn.simulate('click');
@@ -117,7 +119,7 @@ describe('The component <RNI />', () => {
 		expect(val).toBe(4);
 	});
 
-	it("clicking the decrease button will be disabled when the the value equal to the min given",  () => {
+	it("Clicking the decrease button will be disabled when the the value equal to the min given",  () => {
 		const wrapper = setup(RNI, { min : 3, value : 5 });
 		const decreaseBtn = findByTestAttr(wrapper, "decrease-btn");
 		decreaseBtn.simulate('click');
@@ -125,7 +127,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().disableDecreaseBtn).toBe(true);
 	});
 
-	it("clicking the increase button will be disabled when the the value equal to the max given",  () => {
+	it("Clicking the increase button will be disabled when the the value equal to the max given",  () => {
 		const wrapper = setup(RNI, { max : 3 });
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
 		increaseBtn.simulate('click');
@@ -134,7 +136,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().disableIncreaseBtn).toBe(true);
 	});
 
-	it('clicking on the increase button increase by the step given', ()=>{
+	it('Clicking on the increase button increase by the step given', ()=>{
 		const wrapper = setup(RNI, { step : 3 });
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
 		increaseBtn.simulate('click');
@@ -143,7 +145,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().value).toBe(9);
 	})
 
-	it('clicking on the decrease button increase by the step given', ()=>{
+	it('Clicking on the decrease button increase by the step given', ()=>{
 		const wrapper = setup(RNI, { step : 3 });
 		const decreaseBtn = findByTestAttr(wrapper, "decrease-btn");
 		decreaseBtn.simulate('click');
@@ -152,7 +154,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().value).toBe(-9);
 	})
 
-	it("clicking the increment button doesn't change the input to excced the max value when the step was given", ()=>{
+	it("Clicking the increment button doesn't change the input to excced the max value when the step was given", ()=>{
 		const wrapper = setup(RNI, { step : 3, max : 4 });
 		const increaseBtn = findByTestAttr(wrapper, "increase-btn");
 		increaseBtn.simulate('click');
@@ -160,7 +162,7 @@ describe('The component <RNI />', () => {
 		expect(wrapper.state().value).toBe(4);
 	})
 
-	it("clicking the increment button doesn't change the input value to be inferior than the min value when the step was given", ()=>{
+	it("Clicking the increment button doesn't change the input value to be inferior than the min value when the step was given", ()=>{
 		const wrapper = setup(RNI, { step : 3, min : 4 });
 		const decreaseBtn = findByTestAttr(wrapper, "decrease-btn");
 		decreaseBtn.simulate('click');

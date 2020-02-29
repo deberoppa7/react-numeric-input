@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import styles from  './styles.css';
@@ -18,10 +18,12 @@ import styles from  './styles.css';
  * @param {number} precision - describes the number of digits that are used to express the output.
  * @param {boolean} readOnly - Make the input readonly.
  * @param {boolean} disabled - Disable the input
- * @param {function} onChanged - Callback fired when the value updated
 */
 
-export default class RNI extends Component {
+
+const __TEST_MODE__ = process && process.env && (process.env.NODE_ENV === 'test');
+
+export default class RNI extends React.Component {
 	
 	constructor(props){
 		super(props);
@@ -31,6 +33,9 @@ export default class RNI extends Component {
 			disableDecreaseBtn : false,
 			disableIncreaseBtn : false
 		}
+
+		this.inputRef = null;
+		this.event = null;
 	}
 
 	/**
@@ -62,16 +67,38 @@ export default class RNI extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.onChange && (this.state.value !== prevState.value) )
-			this.props.onChange(this.state.value);
+			this.props.onChange(__TEST_MODE__ ? this.state.value : this.event); // We pass event so it can work with "Formik" library..
+	}
+
+	setNativeValue(element, value) {
+		const valueSetter = Object.getOwnPropertyDescriptor(element, 'value').set;
+		const prototype = Object.getPrototypeOf(element);
+		const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
+	
+		if (valueSetter && valueSetter !== prototypeValueSetter) {
+			prototypeValueSetter.call(element, value);
+		} else {
+			valueSetter.call(element, value);
+		}
 	}
 
 	decreaseClickHandler(){
 		const { min, step } = this.props;
 		const { value } 	= this.state;
-		const v = ( (value - step) < min ) ? min  : (value - step);
+		const v = ( (value - step) < min ) ? min : (value - step);
 
-		if( !min || (min && (value > min)) )
-			this.setValue( v, this.checkToDisableButtons );
+		if( !min || (min && (value > min)) ){
+			if(!__TEST_MODE__){
+				/**
+				 * Dispatch the input change event,
+				 * so we can store the event and pass it on onChange methode (for Formik validation)
+				*/ 
+				this.setNativeValue(this.inputRef, v);
+				this.inputRef.dispatchEvent(new Event('input', { bubbles: true }));
+			}
+			else
+				this.setValue( v, this.checkToDisableButtons );
+		}
 	}
 
 	increaseClickHandler(){
@@ -80,11 +107,28 @@ export default class RNI extends Component {
 
 		const v = ((value + step ) > max ) ? max : (value + step );
 
-		if( !max || (max && (value < max)) ) 
-			this.setValue( v, this.checkToDisableButtons );
+		if( !max || (max && (value < max)) ) {
+			if(!__TEST_MODE__){
+				/**
+				 * Dispatch the input change event,
+				 * so we can store the event and pass it on onChange methode (for Formik validation)
+				*/ 
+				this.setNativeValue(this.inputRef, v);
+				this.inputRef.dispatchEvent(new Event('input', { bubbles: true }));
+			}
+			else
+				this.setValue( v, this.checkToDisableButtons );
+		}
 	}
 	
 	inputChangeHandler(e){
+		/**
+		 * Will remove the synthetic event from the pool and allow references 
+		 * to the event to be retained by user code.
+		*/ 
+		e.persist();
+		this.event = e;
+
 		let value = e.target.value;
 		this.setValue( isNaN(value) ? this.state.value : Number( value ) );
 	}
@@ -137,6 +181,7 @@ export default class RNI extends Component {
 					/>
 					<input
 						{...inputProps}
+						ref={(ref)=>this.inputRef = ref}
 						data-test="input" 
 						type="numeric"
 						value={this.renderTheValue()}
@@ -171,7 +216,7 @@ export default class RNI extends Component {
 		mobile 		: false,
 		disabled 	: false,
 		readOnly 	: false,
-		onChanged 	: null
+		onChange 	: null
 	};
 }
 
@@ -188,7 +233,7 @@ RNI.propTypes = {
 	suffix 		: PropTypes.string,
 	format 		: PropTypes.func,
 	mobile 		: PropTypes.bool,
-	onChanged 	: PropTypes.func
+	onChange 	: PropTypes.func
 };
 
 

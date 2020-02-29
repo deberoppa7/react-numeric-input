@@ -1,6 +1,6 @@
 # react-numeric-input
 
-Number input component with more flexible options very easy to use.
+Number input component with more flexible options very easy to use and you can use it with  [Formik](https://github.com/jaredpalmer/formik) 👀.
 
 > 
 
@@ -72,6 +72,10 @@ function myCustomFormat(number) {
 // disabled
 <RNI disabled />
 ```
+
+#### With Formik
+See the examples page [here](https://deberoppa7.github.io/react-numeric-input/#with-formik).
+
 
 ## Props
 Name              | Type                                | Default
