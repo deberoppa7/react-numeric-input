@@ -1,14 +1,15 @@
 {
   "name": "react-numeric-input-example",
   "homepage": "https://deberoppa7.github.io/react-numeric-input",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "formik": "^2.1.4",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-numeric-input": "file:..",
+    "react-numeric-input": "file://..",
     "react-scripts": "^1.1.4",
     "react-syntax-highlighter": "^11.0.2"
   },
@@ -16,6 +17,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "devDependencies": {
+    "gh-pages": "^2.2.0"
   }
 }

@@ -30,3 +30,39 @@ h2{
 p{
   margin-bottom: 20px;
 }
+
+
+/* Formik */
+.formik-form {
+  display : block; 
+	border : 1px solid #ccc;
+	padding-left: 20px;
+	padding-bottom : 20px
+}
+
+.formik-form button {
+  height : 30px;
+	font-size : 14px;
+	padding : 5px;
+	background-color : "#ccc";
+	min-width : 120px
+}
+.formik-form > div {
+  margin-bottom: 20px;
+}
+
+.formik-form .error {
+  display : block;
+	color : red;
+	font-size : 13px;
+	padding-top : 5
+}
+
+.formik-form .firstname {
+  height : 30px;
+	font-size : 13px;
+	padding-top : 5px;
+	min-width : 200px
+}
+
+
