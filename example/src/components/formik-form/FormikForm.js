@@ -34,7 +34,7 @@ export default () =>  {
 
 			<label htmlFor="firstname">Firstname</label>
 			<div>
-				<input type="text" name="firstname" onChange={formik.handleChange} />
+				<input className="firstname" type="text" name="firstname" onChange={formik.handleChange} />
 				{/* Error message */}
 				{formik.errors.firstname ? <span className="error">{formik.errors.firstname}</span> : null}
 			</div>
