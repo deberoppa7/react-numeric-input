@@ -1,6 +1,6 @@
 # react-numeric-input
 
-Number input component with more flexible options very easy to use and you can use it with  [Formik](https://github.com/jaredpalmer/formik) 👀.
+Number input component with more flexible options very easy to use. compatible with [Formik](https://github.com/jaredpalmer/formik) library 👀.
 
 > 
 
